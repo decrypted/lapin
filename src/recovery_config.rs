@@ -22,7 +22,7 @@ impl RecoveryConfig {
 
     #[cfg(feature = "unstable")]
     pub fn auto_recover_connection(mut self) -> Self {
-        self.auto_recover_channels = true;
+        self.auto_recover_connection = true;
         self
     }
 

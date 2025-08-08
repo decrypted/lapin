@@ -564,7 +564,16 @@ impl IoLoop {
                     return Ok(stream);
                 }
                 Err(mid) => {
-                    res = mid.into_mid_handshake_tls_stream()?.handshake();
+                    // Try to convert to mid-handshake stream. If this fails, it means
+                    // the error was not a TLS handshake error but a connection failure.
+                    match mid.into_mid_handshake_tls_stream() {
+                        Ok(mid_stream) => {
+                            res = mid_stream.handshake();
+                        }
+                        Err(connection_error) => {
+                            return Err(connection_error.into());
+                        }
+                    }
                 }
             }
         }
